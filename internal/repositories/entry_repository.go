@@ -2,9 +2,12 @@ package repositories
 
 import (
 	"context"
+	"fmt"
 
 	"github.com/dannyoka/memorize-it-api/internal/data"
+	"github.com/google/uuid"
 	"go.mongodb.org/mongo-driver/v2/bson"
+
 	"go.mongodb.org/mongo-driver/v2/mongo"
 )
 
@@ -30,21 +33,28 @@ func (repo *EntryRepository) GetEntry(id string) data.Entry {
 	return result
 }
 
-func (repo *EntryRepository) CreateEntry(entry data.Entry) {
+func (repo *EntryRepository) CreateEntry(entry data.EntryPayload) data.Entry {
 	// create entry in db
+	newEntry := data.Entry{
+		Id:      uuid.New().String(),
+		Name:    entry.Name,
+		Content: entry.Content,
+	}
+	_, err := repo.coll.InsertOne(context.Background(), newEntry)
+	if err != nil {
+		fmt.Println("error", err)
+	}
+	return newEntry
 }
 
 func (repo *EntryRepository) GetEntries() []data.Entry {
-	var results []data.Entry
 	cursor, err := repo.coll.Find(context.Background(), bson.D{})
 	if err != nil {
+		fmt.Println("error", err)
 		return nil
 	}
 	defer cursor.Close(context.Background())
-	for cursor.Next(context.Background()) {
-		var result data.Entry
-		cursor.Decode(&result)
-		results = append(results, result)
-	}
+	var results []data.Entry
+	cursor.All(context.Background(), &results)
 	return results
 }

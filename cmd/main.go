@@ -8,6 +8,8 @@ import (
 	"github.com/dannyoka/memorize-it-api/internal/controllers"
 	"github.com/dannyoka/memorize-it-api/internal/repositories"
 	"github.com/dannyoka/memorize-it-api/internal/services"
+	"github.com/gorilla/handlers"
+	"github.com/gorilla/mux"
 	"github.com/joho/godotenv"
 	"go.mongodb.org/mongo-driver/v2/mongo"
 	"go.mongodb.org/mongo-driver/v2/mongo/options"
@@ -40,6 +42,19 @@ func main() {
 	entryRepository := repositories.NewEntryRepository(db)
 	entryService := services.NewEntryService(*entryRepository)
 	entryController := controllers.NewEntryController(*entryService)
-	http.HandleFunc("/entries", entryController.HandleGetEntries)
-	http.ListenAndServe(":8080", nil)
+	r := mux.NewRouter()
+	r.HandleFunc("/entries", entryController.HandleGetEntries).Methods("GET")
+	r.HandleFunc("/entries/{id}", entryController.HandleGetEntry).Methods("GET")
+	r.HandleFunc("/entries/create", entryController.HandleCreateEntry).Methods("POST")
+	originsOk := handlers.AllowedOrigins([]string{"*"})
+	headersOk := handlers.AllowedHeaders(
+		[]string{
+			"X-Requested-With",
+			"Content-Type",
+			"Authorization",
+			"Access-Control-Allow-Origin",
+		},
+	)
+	http.Handle("/", r)
+	http.ListenAndServe(":8080", handlers.CORS(originsOk, headersOk)(r))
 }
