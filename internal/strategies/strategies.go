@@ -9,9 +9,9 @@ func EveryNthWord(memorizedString string, n int) string {
 	var newString string
 	for i, word := range stringArray {
 		if i%n == 0 {
-			newString += replaceLettersWithUnderscore(word) + " "
-		} else {
 			newString += word + " "
+		} else {
+			newString += replaceLettersWithUnderscore(word) + " "
 		}
 	}
 	return newString
