@@ -56,5 +56,6 @@ func main() {
 		},
 	)
 	http.Handle("/", r)
-	http.ListenAndServe(os.Getenv("PORT"), handlers.CORS(originsOk, headersOk)(r))
+	port := os.Getenv("PORT")
+	http.ListenAndServe(fmt.Sprintf(":%s", port), handlers.CORS(originsOk, headersOk)(r))
 }
