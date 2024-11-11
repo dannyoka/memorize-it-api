@@ -56,5 +56,5 @@ func main() {
 		},
 	)
 	http.Handle("/", r)
-	http.ListenAndServe(":8080", handlers.CORS(originsOk, headersOk)(r))
+	http.ListenAndServe(os.Getenv("PORT"), handlers.CORS(originsOk, headersOk)(r))
 }
