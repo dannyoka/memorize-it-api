@@ -1,1 +1,1 @@
-web: build/memorize-it-api
+web: heroku-build/main
