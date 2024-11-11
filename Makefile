@@ -4,3 +4,10 @@ dev:
 
 heroku:
 	GOARCH=amd64 go build -o heroku-build/main -v cmd/main.go
+
+push-heroku:
+	/opt/homebrew/bin/git push heroku main
+
+deploy-heroku:
+	make heroku
+	make push-heroku

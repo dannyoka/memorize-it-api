@@ -1,1 +1,1 @@
-web: heroku-build/main
+web: ./heroku-build/main
