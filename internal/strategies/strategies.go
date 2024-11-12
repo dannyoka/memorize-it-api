@@ -28,10 +28,24 @@ func FirstLetterOfEveryWord(memorizedString string) string {
 
 func replaceLettersWithUnderscore(startString string) string {
 	var newString string
-	for i := 0; i < len(startString); i++ {
-		newString += "_"
+	// for i := 0; i < len(startString); i++ {
+	// 	newString += "_"
+	// }
+	for _, letter := range startString {
+		if checkIfCharacterIsLetter(letter) {
+			newString += "_"
+		} else {
+			newString += string(letter)
+		}
 	}
 	return newString
+}
+
+func checkIfCharacterIsLetter(character rune) bool {
+	if (character >= 'a' && character <= 'z') || (character >= 'A' && character <= 'Z') {
+		return true
+	}
+	return false
 }
 
 func replaceAllButFirstLetterWithUnderscore(startString string) string {
